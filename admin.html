@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barze Koya - Admin Panel</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; background: #1a2a1a; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+
+/* Login */
+.login-box { background: #fff; border-radius: 16px; padding: 40px; width: 360px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); text-align: center; }
+.login-box h2 { color: #1e3d2f; margin-bottom: 8px; font-size: 1.5rem; }
+.login-box p { color: #666; margin-bottom: 24px; font-size: 0.9rem; }
+.login-box input { width: 100%; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; margin-bottom: 16px; outline: none; transition: border 0.3s; }
+.login-box input:focus { border-color: #1e3d2f; }
+.login-box button { width: 100%; padding: 13px; background: #1e3d2f; color: #fff; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: background 0.3s; }
+.login-box button:hover { background: #2a5a40; }
+.error-msg { color: red; font-size: 0.85rem; margin-top: -8px; margin-bottom: 12px; display: none; }
+
+/* Admin Panel */
+.admin-panel { display: none; width: 100%; max-width: 800px; margin: 20px auto; padding: 20px; }
+.admin-header { background: #1e3d2f; color: #fff; padding: 20px 24px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+.admin-header h1 { font-size: 1.3rem; }
+.logout-btn { background: rgba(255,255,255,0.2); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; }
+.logout-btn:hover { background: rgba(255,255,255,0.3); }
+
+.currency-card { background: #fff; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.currency-flag { font-size: 1.8rem; min-width: 40px; text-align: center; }
+.currency-name { font-weight: 700; color: #1e3d2f; min-width: 60px; font-size: 1rem; }
+.price-group { display: flex; gap: 12px; flex: 1; }
+.price-input-box { flex: 1; }
+.price-input-box label { display: block; font-size: 0.75rem; color: #666; margin-bottom: 4px; font-weight: 600; }
+.price-input-box input { width: 100%; padding: 8px 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 0.95rem; outline: none; transition: border 0.3s; text-align: center; }
+.price-input-box input:focus { border-color: #1e3d2f; }
+.buy-label { color: #2563eb; }
+.sell-label { color: #dc2626; }
+
+.save-btn { width: 100%; padding: 16px; background: #d4a843; color: #1e3d2f; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 8px; transition: background 0.3s; }
+.save-btn:hover { background: #e8bc55; }
+
+.success-msg { display: none; background: #d1fae5; color: #065f46; padding: 16px; border-radius: 10px; text-align: center; margin-top: 12px; font-weight: 600; font-size: 1rem; }
+
+.instruction { background: #fff3cd; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; color: #856404; font-size: 0.88rem; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div class="login-box" id="loginBox">
+    <h2>🔐 ئادمین پەنێل</h2>
+    <p>Barze Koya Exchange</p>
+    <input type="password" id="passInput" placeholder="پاسووردەکە بنووسە" onkeypress="if(event.key==='Enter')login()">
+    <div class="error-msg" id="errorMsg">❌ پاسووردەکە هەڵەیە!</div>
+    <button onclick="login()">داخل بوون</button>
+</div>
+
+<!-- Admin Panel -->
+<div class="admin-panel" id="adminPanel">
+    <div class="admin-header">
+        <h1>💱 گۆڕینی نرخی دراو</h1>
+        <button class="logout-btn" onclick="logout()">دەرچوون</button>
+    </div>
+
+    <div class="instruction">
+        ⚠️ دوای گۆڕینی نرخەکان، کلیک بکە لەسەر <strong>"تازەکردنەوەی سایت"</strong> — دواتر فایلی index.html دابگرە و بیبەرە GitHub.
+    </div>
+
+    <div id="currencyList"></div>
+
+    <button class="save-btn" onclick="saveChanges()">💾 تازەکردنەوەی سایت</button>
+    <div class="success-msg" id="successMsg">✅ نرخەکان تازە کران! ئێستا فایلی index.html دابگرە.</div>
+</div>
+
+<script>
+const PASSWORD = 'Hama123@';
+
+const currencies = [
+    { code: 'USD', name: 'دۆلار', flag: '🇺🇸', buy: '149,600', sell: '149,700' },
+    { code: 'EUR', name: 'یۆرۆ', flag: '🇪🇺', buy: '1,675', sell: '1,670' },
+    { code: 'GBP', name: 'پاوەند', flag: '🇬🇧', buy: '1,920', sell: '1,910' },
+    { code: 'TRY', name: 'لیرە', flag: '🇹🇷', buy: '48', sell: '47' },
+    { code: 'AED', name: 'دیرهەم', flag: '🇦🇪', buy: '420', sell: '415' },
+    { code: 'SAR', name: 'ریال سعودی', flag: '🇸🇦', buy: '410', sell: '405' },
+    { code: 'KWD', name: 'دینار کویتی', flag: '🇰🇼', buy: '4,980', sell: '4,960' },
+    { code: 'IRR', name: 'تومان', flag: '🇮🇷', buy: '213,000', sell: '212,000' },
+    { code: 'NOK', name: 'کرۆن نۆرویجی', flag: '🇳🇴', buy: '13,500', sell: '13,400' },
+    { code: 'SEK', name: 'کرۆن سویدی', flag: '🇸🇪', buy: '14,000', sell: '13,900' },
+    { code: 'DKK', name: 'کرۆن دانمارکی', flag: '🇩🇰', buy: '21,000', sell: '20,800' },
+    { code: 'AUD', name: 'دۆلاری ئوسترالیا', flag: '🇦🇺', buy: '94,000', sell: '93,500' },
+    { code: 'CHF', name: 'فرەنک', flag: '🇨🇭', buy: '168,000', sell: '167,500' },
+    { code: 'CAD', name: 'دۆلاری کەنەدا', flag: '🇨🇦', buy: '105,000', sell: '104,500' },
+];
+
+function login() {
+    const pass = document.getElementById('passInput').value;
+    if (pass === PASSWORD) {
+        document.getElementById('loginBox').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+        renderCurrencies();
+    } else {
+        document.getElementById('errorMsg').style.display = 'block';
+    }
+}
+
+function logout() {
+    document.getElementById('loginBox').style.display = 'flex';
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('passInput').value = '';
+}
+
+function renderCurrencies() {
+    const list = document.getElementById('currencyList');
+    list.innerHTML = currencies.map((c, i) => `
+        <div class="currency-card">
+            <div class="currency-flag">${c.flag}</div>
+            <div class="currency-name">${c.code}</div>
+            <div class="price-group">
+                <div class="price-input-box">
+                    <label class="buy-label">کڕین (Buy)</label>
+                    <input type="text" id="buy_${i}" value="${c.buy}">
+                </div>
+                <div class="price-input-box">
+                    <label class="sell-label">فرۆشتن (Sell)</label>
+                    <input type="text" id="sell_${i}" value="${c.sell}">
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function saveChanges() {
+    currencies.forEach((c, i) => {
+        c.buy = document.getElementById('buy_' + i).value;
+        c.sell = document.getElementById('sell_' + i).value;
+    });
+
+    // Generate updated index.html content info
+    let info = 'نرخە نوێیەکان:\n\n';
+    currencies.forEach(c => {
+        info += c.code + ': کڕین=' + c.buy + ' | فرۆشتن=' + c.sell + '\n';
+    });
+
+    document.getElementById('successMsg').style.display = 'block';
+    document.getElementById('successMsg').innerHTML = '✅ نرخەکان نوێ کران!<br><small>ئێستا فایلی index.html دابگرە و بیبەرە GitHub بۆ نوێکردنەوەی سایت.</small>';
+
+    setTimeout(() => {
+        document.getElementById('successMsg').style.display = 'none';
+    }, 5000);
+}
+</script>
+</body>
+</html>
