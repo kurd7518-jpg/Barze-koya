@@ -1,46 +1,46 @@
 {
-  "usd_buy": "152.000",
-  "usd_sell": "1500",
+  "usd_buy": "151,000",
+  "usd_sell": "151,750",
 
-  "eur_buy": "1670",
-  "eur_sell": "1675",
+  "eur_buy": "117.5",
+  "eur_sell": "118.15",
 
-  "gbp_buy": "1910",
-  "gbp_sell": "1920",
+  "gbp_buy": "134.25",
+  "gbp_sell": "135",
 
-  "try_buy": "47",
-  "try_sell": "48",
+  "try_buy": "4500",
+  "try_sell": "4350",
 
-  "aed_buy": "415",
-  "aed_sell": "420",
+  "aed_buy": "367",
+  "aed_sell": "361",
 
-  "sar_buy": "405",
-  "sar_sell": "410",
+  "sar_buy": "380",
+  "sar_sell": "368",
 
-  "kwd_buy": "4960",
-  "kwd_sell": "4980",
+  "kwd_buy": "285",
+  "kwd_sell": "315",
 
-  "irr_buy": "0.035",
-  "irr_sell": "0.036",
+  "irr_buy": "14.000.000",
+  "irr_sell": "11.750.000",
 
-  "jod_buy": "212000",
-  "jod_sell": "213000",
+  "jod_buy": "71",
+  "jod_sell": "69",
 
-  "nok_buy": "13400",
-  "nok_sell": "13500",
+  "nok_buy": "83",
+  "nok_sell": "86",
 
-  "sek_buy": "13900",
-  "sek_sell": "14000",
+  "sek_buy": "96",
+  "sek_sell": "99",
 
-  "dkk_buy": "20800",
-  "dkk_sell": "21000",
+  "dkk_buy": "139",
+  "dkk_sell": "143",
 
-  "aud_buy": "93500",
-  "aud_sell": "94000",
+  "aud_buy": "67",
+  "aud_sell": "69",
 
-  "chf_buy": "167500",
-  "chf_sell": "168000",
+  "chf_buy": "127.5",
+  "chf_sell": "129",
 
-  "cad_buy": "104500",
-  "cad_sell": "105000"
+  "cad_buy": "71",
+  "cad_sell": "72.5"
 }
