@@ -1,5 +1,5 @@
 {
-  "usd_buy": "151400",
+  "usd_buy": "151500",
   "usd_sell": "151750",
   "eur_buy": "117.40",
   "eur_sell": "118.15",
@@ -12,5 +12,21 @@
   "sar_buy": "380",
   "sar_sell": "368",
   "kwd_buy": "285",
-  "kwd_sell": "315"
+  "kwd_sell": "315",
+  "irr_buy": "",
+  "irr_sell": "",
+  "jod_buy": "",
+  "jod_sell": "",
+  "nok_buy": "",
+  "nok_sell": "",
+  "sek_buy": "",
+  "sek_sell": "",
+  "dkk_buy": "",
+  "dkk_sell": "",
+  "aud_buy": "",
+  "aud_sell": "",
+  "chf_buy": "0",
+  "chf_sell": "",
+  "cad_buy": "",
+  "cad_sell": ""
 }
