@@ -820,6 +820,13 @@ table, tr, td, th, div, section {
             0.5);
             }
             }
+            .currency-table tbody tr.touched {
+    background: linear-gradient(90deg,
+        rgba(212, 175, 55, 0.25) 0%,
+        rgba(15, 122, 95, 0.15) 100%) !important;
+    transform: translateX(-3px);
+    transition: all 0.25s ease;
+}
         </style>
     </head><body>
     <div class="bg-pattern">
@@ -1236,6 +1243,14 @@ table, tr, td, th, div, section {
                     (function() { document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; }); document.addEventListener('keydown', function(e) { if ( e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 'U') || (e.ctrlKey && e.key === 's') || (e.ctrlKey && e.key === 'S') ) { e.preventDefault(); return false; } }); document.addEventListener('selectstart', function(e) { e.preventDefault(); }); document.addEventListener('dragstart', function(e) { e.preventDefault(); }); var devtoolsOpen = false; var threshold = 500; setInterval(function() { if ( window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold ) { if (!devtoolsOpen) { devtoolsOpen = true; document.body.style.filter = ''; document.body.style.pointerEvents = 'none'; } } else { if (devtoolsOpen) { devtoolsOpen = false; document.body.style.filter = ''; document.body.style.pointerEvents = ''; } } }, 500); document.addEventListener('copy', function(e) { e.clipboardData.setData('text/plain', ''); e.preventDefault(); }); })(); function updateDateTime() { const el = document.getElementById("datetime"); if (!el) return; const now = new Date(); const options = { timeZone: 'Asia/Baghdad', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }; el.textContent = now.toLocaleString('en-US', options); } setInterval(updateDateTime, 1000); updateDateTime();
                 </script>
     <script>
+        document.querySelectorAll('.currency-table tbody tr').forEach(row => {
+    row.addEventListener('touchstart', () => {
+        row.classList.add('touched');
+    }, {passive: true});
+    row.addEventListener('touchend', () => {
+        setTimeout(() => row.classList.remove('touched'), 400);
+    }, {passive: true});
+});
 function loadRates() {
   fetch('rates.json?' + new Date().getTime())
     .then(response => response.json())
