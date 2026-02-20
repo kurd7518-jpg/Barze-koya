@@ -1246,6 +1246,9 @@ table, tr, td, th, div, section {
     row.addEventListener('touchstart', () => {
         row.classList.add('touched');
     }, {passive: true});
+    row.addEventListener('touchend', () => {
+        setTimeout(() => row.classList.remove('touched'), 400);
+    }, {passive: true});        
 });
 function loadRates() {
   fetch('rates.json?' + new Date().getTime())
