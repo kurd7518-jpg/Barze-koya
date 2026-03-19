@@ -1,153 +1,756 @@
 <!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Barze Koya - Admin Panel</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: Arial, sans-serif; background: #1a2a1a; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0a1628">
+    <title>بارزەکۆیا - نوێکردنەوەی نرخ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-/* Login */
-.login-box { background: #fff; border-radius: 16px; padding: 40px; width: 360px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); text-align: center; }
-.login-box h2 { color: #1e3d2f; margin-bottom: 8px; font-size: 1.5rem; }
-.login-box p { color: #666; margin-bottom: 24px; font-size: 0.9rem; }
-.login-box input { width: 100%; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; margin-bottom: 16px; outline: none; transition: border 0.3s; }
-.login-box input:focus { border-color: #1e3d2f; }
-.login-box button { width: 100%; padding: 13px; background: #1e3d2f; color: #fff; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: background 0.3s; }
-.login-box button:hover { background: #2a5a40; }
-.error-msg { color: red; font-size: 0.85rem; margin-top: -8px; margin-bottom: 12px; display: none; }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #0a1628;
+            color: #fff;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            direction: rtl;
+            overscroll-behavior: none;
+        }
 
-/* Admin Panel */
-.admin-panel { display: none; width: 100%; max-width: 800px; margin: 20px auto; padding: 20px; }
-.admin-header { background: #1e3d2f; color: #fff; padding: 20px 24px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-.admin-header h1 { font-size: 1.3rem; }
-.logout-btn { background: rgba(255,255,255,0.2); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; }
-.logout-btn:hover { background: rgba(255,255,255,0.3); }
+        .bg-pattern {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(218, 165, 32, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(26, 76, 140, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
 
-.currency-card { background: #fff; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-.currency-flag { font-size: 1.8rem; min-width: 40px; text-align: center; }
-.currency-name { font-weight: 700; color: #1e3d2f; min-width: 60px; font-size: 1rem; }
-.price-group { display: flex; gap: 12px; flex: 1; }
-.price-input-box { flex: 1; }
-.price-input-box label { display: block; font-size: 0.75rem; color: #666; margin-bottom: 4px; font-weight: 600; }
-.price-input-box input { width: 100%; padding: 8px 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 0.95rem; outline: none; transition: border 0.3s; text-align: center; }
-.price-input-box input:focus { border-color: #1e3d2f; }
-.buy-label { color: #2563eb; }
-.sell-label { color: #dc2626; }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: env(safe-area-inset-top, 20px) 16px calc(env(safe-area-inset-bottom, 0px) + 100px);
+            position: relative;
+            z-index: 1;
+        }
 
-.save-btn { width: 100%; padding: 16px; background: #d4a843; color: #1e3d2f; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 8px; transition: background 0.3s; }
-.save-btn:hover { background: #e8bc55; }
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-top: 10px;
+        }
 
-.success-msg { display: none; background: #d1fae5; color: #065f46; padding: 16px; border-radius: 10px; text-align: center; margin-top: 12px; font-weight: 600; font-size: 1rem; }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
 
-.instruction { background: #fff3cd; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; color: #856404; font-size: 0.88rem; line-height: 1.6; }
-</style>
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #DAA520, #f0c040);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 4px 20px rgba(218, 165, 32, 0.4);
+            flex-shrink: 0;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 900;
+            color: #DAA520;
+        }
+
+        .header p {
+            color: #8899aa;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* Status bar */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding: 9px 18px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.08);
+            font-size: 13px;
+            color: #8899aa;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 8px #22c55e;
+            animation: pulse 2s infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        /* Rate cards */
+        .rates-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .rate-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 14px 16px;
+            transition: border-color 0.2s;
+        }
+
+        .rate-card:active {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .rate-card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .currency-flag {
+            font-size: 28px;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .currency-name { flex: 1; min-width: 0; }
+
+        .currency-name .code {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .currency-name .full {
+            font-size: 11px;
+            color: #8899aa;
+        }
+
+        .rate-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 11px;
+            color: #8899aa;
+            text-align: center;
+        }
+
+        .input-group label span {
+            display: block;
+            font-size: 10px;
+            opacity: 0.7;
+        }
+
+        .rate-input {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 12px 8px;
+            color: #fff;
+            font-family: 'Cairo', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            width: 100%;
+            transition: all 0.2s;
+            direction: ltr;
+            /* Better touch target */
+            min-height: 50px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        /* Remove number input arrows */
+        .rate-input::-webkit-inner-spin-button,
+        .rate-input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .rate-input[type=number] { -moz-appearance: textfield; }
+
+        .rate-input:focus {
+            outline: none;
+            border-color: #DAA520;
+            background: rgba(218, 165, 32, 0.08);
+            box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.1);
+        }
+
+        .buy-input { border-color: rgba(34, 197, 94, 0.3); }
+        .buy-input:focus { border-color: #22c55e; background: rgba(34, 197, 94, 0.08); box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1); }
+
+        .sell-input { border-color: rgba(239, 68, 68, 0.3); }
+        .sell-input:focus { border-color: #ef4444; background: rgba(239, 68, 68, 0.08); box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1); }
+
+        /* Sticky update button */
+        .sticky-btn-wrap {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 16px calc(env(safe-area-inset-bottom, 0px) + 12px);
+            background: linear-gradient(to top, #0a1628 60%, transparent);
+            z-index: 100;
+        }
+
+        .update-btn {
+            width: 100%;
+            padding: 17px;
+            background: linear-gradient(135deg, #DAA520, #f0c040);
+            border: none;
+            border-radius: 14px;
+            color: #0a1628;
+            font-family: 'Cairo', sans-serif;
+            font-size: 17px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 25px rgba(218, 165, 32, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            touch-action: manipulation;
+        }
+
+        .update-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 15px rgba(218, 165, 32, 0.3);
+        }
+
+        .update-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-icon { font-size: 19px; }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);
+            left: 50%;
+            transform: translateX(-50%) translateY(30px);
+            padding: 13px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 200;
+            white-space: nowrap;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+        .toast.error { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+
+        /* Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(10, 22, 40, 0.3);
+            border-top-color: #0a1628;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+            flex-shrink: 0;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading .spinner { display: block; }
+        .loading .btn-icon { display: none; }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            color: #4a5568;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .highlight { color: #DAA520; font-weight: 700; }
+
+        /* Keyboard open: shrink inputs a bit */
+        @media (max-height: 500px) {
+            .rate-input { font-size: 17px; padding: 9px 6px; min-height: 42px; }
+            .container { padding-top: 8px; }
+        }
+    </style>
 </head>
 <body>
+    <div class="bg-pattern"></div>
 
-<!-- Login -->
-<div class="login-box" id="loginBox">
-    <h2>🔐 ئادمین پەنێل</h2>
-    <p>Barze Koya Exchange</p>
-    <input type="password" id="passInput" placeholder="پاسووردەکە بنووسە" onkeypress="if(event.key==='Enter')login()">
-    <div class="error-msg" id="errorMsg">❌ پاسووردەکە هەڵەیە!</div>
-    <button onclick="login()">داخل بوون</button>
-</div>
+    <div class="container">
+        <div class="header">
+            <div class="logo-area">
+                <div class="logo-icon">💱</div>
+                <h1>بارزەکۆیا</h1>
+            </div>
+            <p>نوێکردنەوەی نرخی ڕۆژانەی دراو</p>
+        </div>
 
-<!-- Admin Panel -->
-<div class="admin-panel" id="adminPanel">
-    <div class="admin-header">
-        <h1>💱 گۆڕینی نرخی دراو</h1>
-        <button class="logout-btn" onclick="logout()">دەرچوون</button>
-    </div>
+        <div class="status-bar">
+            <div class="status-dot"></div>
+            <span>ئامادەی نوێکردنەوە</span>
+        </div>
 
-    <div class="instruction">
-        ⚠️ دوای گۆڕینی نرخەکان، کلیک بکە لەسەر <strong>"تازەکردنەوەی سایت"</strong> — دواتر فایلی index.html دابگرە و بیبەرە GitHub.
-    </div>
+        <div class="rates-grid">
 
-    <div id="currencyList"></div>
-
-    <button class="save-btn" onclick="saveChanges()">💾 تازەکردنەوەی سایت</button>
-    <div class="success-msg" id="successMsg">✅ نرخەکان تازە کران! ئێستا فایلی index.html دابگرە.</div>
-</div>
-
-<script>
-const PASSWORD = 'Hama123@';
-
-const currencies = [
-    { code: 'USD', name: 'دۆلار', flag: '🇺🇸', buy: '149,600', sell: '149,700' },
-    { code: 'EUR', name: 'یۆرۆ', flag: '🇪🇺', buy: '1,675', sell: '1,670' },
-    { code: 'GBP', name: 'پاوەند', flag: '🇬🇧', buy: '1,920', sell: '1,910' },
-    { code: 'TRY', name: 'لیرە', flag: '🇹🇷', buy: '48', sell: '47' },
-    { code: 'AED', name: 'دیرهەم', flag: '🇦🇪', buy: '420', sell: '415' },
-    { code: 'SAR', name: 'ریال سعودی', flag: '🇸🇦', buy: '410', sell: '405' },
-    { code: 'KWD', name: 'دینار کویتی', flag: '🇰🇼', buy: '4,980', sell: '4,960' },
-    { code: 'IRR', name: 'تومان', flag: '🇮🇷', buy: '213,000', sell: '212,000' },
-    { code: 'NOK', name: 'کرۆن نۆرویجی', flag: '🇳🇴', buy: '13,500', sell: '13,400' },
-    { code: 'SEK', name: 'کرۆن سویدی', flag: '🇸🇪', buy: '14,000', sell: '13,900' },
-    { code: 'DKK', name: 'کرۆن دانمارکی', flag: '🇩🇰', buy: '21,000', sell: '20,800' },
-    { code: 'AUD', name: 'دۆلاری ئوسترالیا', flag: '🇦🇺', buy: '94,000', sell: '93,500' },
-    { code: 'CHF', name: 'فرەنک', flag: '🇨🇭', buy: '168,000', sell: '167,500' },
-    { code: 'CAD', name: 'دۆلاری کەنەدا', flag: '🇨🇦', buy: '105,000', sell: '104,500' },
-];
-
-function login() {
-    const pass = document.getElementById('passInput').value;
-    if (pass === PASSWORD) {
-        document.getElementById('loginBox').style.display = 'none';
-        document.getElementById('adminPanel').style.display = 'block';
-        renderCurrencies();
-    } else {
-        document.getElementById('errorMsg').style.display = 'block';
-    }
-}
-
-function logout() {
-    document.getElementById('loginBox').style.display = 'flex';
-    document.getElementById('adminPanel').style.display = 'none';
-    document.getElementById('passInput').value = '';
-}
-
-function renderCurrencies() {
-    const list = document.getElementById('currencyList');
-    list.innerHTML = currencies.map((c, i) => `
-        <div class="currency-card">
-            <div class="currency-flag">${c.flag}</div>
-            <div class="currency-name">${c.code}</div>
-            <div class="price-group">
-                <div class="price-input-box">
-                    <label class="buy-label">کڕین (Buy)</label>
-                    <input type="text" id="buy_${i}" value="${c.buy}">
+            <div class="rate-card">
+                <div class="rate-card-header">
+                    <div class="currency-flag">🇺🇸</div>
+                    <div class="currency-name">
+                        <div class="code">USD — دۆلاری ئەمریکی</div>
+                        <div class="full">United States Dollar</div>
+                    </div>
                 </div>
-                <div class="price-input-box">
-                    <label class="sell-label">فرۆشتن (Sell)</label>
-                    <input type="text" id="sell_${i}" value="${c.sell}">
+                <div class="rate-inputs">
+                    <div class="input-group">
+                        <label>کڕین <span>Buy | شراء</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input buy-input" id="usd_buy" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>فرۆشتن <span>Sell | بيع</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input sell-input" id="usd_sell" placeholder="0">
+                    </div>
                 </div>
             </div>
+
+            <div class="rate-card">
+                <div class="rate-card-header">
+                    <div class="currency-flag">🇪🇺</div>
+                    <div class="currency-name">
+                        <div class="code">EUR — یۆرۆی ئەوروپا</div>
+                        <div class="full">Euro</div>
+                    </div>
+                </div>
+                <div class="rate-inputs">
+                    <div class="input-group">
+                        <label>کڕین <span>Buy | شراء</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input buy-input" id="eur_buy" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>فرۆشتن <span>Sell | بيع</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input sell-input" id="eur_sell" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="rate-card">
+                <div class="rate-card-header">
+                    <div class="currency-flag">🇬🇧</div>
+                    <div class="currency-name">
+                        <div class="code">GBP — پاوەندی بەریتانی</div>
+                        <div class="full">British Pound</div>
+                    </div>
+                </div>
+                <div class="rate-inputs">
+                    <div class="input-group">
+                        <label>کڕین <span>Buy | شراء</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input buy-input" id="gbp_buy" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>فرۆشتن <span>Sell | بيع</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input sell-input" id="gbp_sell" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="rate-card">
+                <div class="rate-card-header">
+                    <div class="currency-flag">🇹🇷</div>
+                    <div class="currency-name">
+                        <div class="code">TRY — لیرەی تورکی</div>
+                        <div class="full">Turkish Lira</div>
+                    </div>
+                </div>
+                <div class="rate-inputs">
+                    <div class="input-group">
+                        <label>کڕین <span>Buy | شراء</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input buy-input" id="try_buy" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>فرۆشتن <span>Sell | بيع</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input sell-input" id="try_sell" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="rate-card">
+                <div class="rate-card-header">
+                    <div class="currency-flag">🇦🇪</div>
+                    <div class="currency-name">
+                        <div class="code">AED — دیرهەمی ئیماراتی</div>
+                        <div class="full">UAE Dirham</div>
+                    </div>
+                </div>
+                <div class="rate-inputs">
+                    <div class="input-group">
+                        <label>کڕین <span>Buy | شراء</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input buy-input" id="aed_buy" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>فرۆشتن <span>Sell | بيع</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input sell-input" id="aed_sell" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="rate-card">
+                <div class="rate-card-header">
+                    <div class="currency-flag">🇸🇦</div>
+                    <div class="currency-name">
+                        <div class="code">SAR — ریالی سعودی</div>
+                        <div class="full">Saudi Riyal</div>
+                    </div>
+                </div>
+                <div class="rate-inputs">
+                    <div class="input-group">
+                        <label>کڕین <span>Buy | شراء</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input buy-input" id="sar_buy" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>فرۆشتن <span>Sell | بيع</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input sell-input" id="sar_sell" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="rate-card">
+                <div class="rate-card-header">
+                    <div class="currency-flag">🇰🇼</div>
+                    <div class="currency-name">
+                        <div class="code">KWD — دینارێ کوەیتی</div>
+                        <div class="full">Kuwaiti Dinar</div>
+                    </div>
+                </div>
+                <div class="rate-inputs">
+                    <div class="input-group">
+                        <label>کڕین <span>Buy | شراء</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input buy-input" id="kwd_buy" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>فرۆشتن <span>Sell | بيع</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input sell-input" id="kwd_sell" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="rate-card">
+                <div class="rate-card-header">
+                    <div class="currency-flag">🇮🇷</div>
+                    <div class="currency-name">
+                        <div class="code">IRR — ریالی ئیرانی</div>
+                        <div class="full">Iranian Rial</div>
+                    </div>
+                </div>
+                <div class="rate-inputs">
+                    <div class="input-group">
+                        <label>کڕین <span>Buy | شراء</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input buy-input" id="irr_buy" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>فرۆشتن <span>Sell | بيع</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input sell-input" id="irr_sell" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="rate-card">
+                <div class="rate-card-header">
+                    <div class="currency-flag">🇯🇴</div>
+                    <div class="currency-name">
+                        <div class="code">JOD — دینارێ ئوردونی</div>
+                        <div class="full">Jordanian Dinar</div>
+                    </div>
+                </div>
+                <div class="rate-inputs">
+                    <div class="input-group">
+                        <label>کڕین <span>Buy | شراء</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input buy-input" id="jod_buy" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>فرۆشتن <span>Sell | بيع</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input sell-input" id="jod_sell" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="rate-card">
+                <div class="rate-card-header">
+                    <div class="currency-flag">🇳🇴</div>
+                    <div class="currency-name">
+                        <div class="code">NOK — کرۆنی نۆرویژی</div>
+                        <div class="full">Norwegian Krone</div>
+                    </div>
+                </div>
+                <div class="rate-inputs">
+                    <div class="input-group">
+                        <label>کڕین <span>Buy | شراء</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input buy-input" id="nok_buy" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>فرۆشتن <span>Sell | بيع</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input sell-input" id="nok_sell" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="rate-card">
+                <div class="rate-card-header">
+                    <div class="currency-flag">🇸🇪</div>
+                    <div class="currency-name">
+                        <div class="code">SEK — کرۆنی سوێدی</div>
+                        <div class="full">Swedish Krona</div>
+                    </div>
+                </div>
+                <div class="rate-inputs">
+                    <div class="input-group">
+                        <label>کڕین <span>Buy | شراء</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input buy-input" id="sek_buy" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>فرۆشتن <span>Sell | بيع</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input sell-input" id="sek_sell" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="rate-card">
+                <div class="rate-card-header">
+                    <div class="currency-flag">🇩🇰</div>
+                    <div class="currency-name">
+                        <div class="code">DKK — کرۆنی دانیمارکی</div>
+                        <div class="full">Danish Krone</div>
+                    </div>
+                </div>
+                <div class="rate-inputs">
+                    <div class="input-group">
+                        <label>کڕین <span>Buy | شراء</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input buy-input" id="dkk_buy" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>فرۆشتن <span>Sell | بيع</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input sell-input" id="dkk_sell" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="rate-card">
+                <div class="rate-card-header">
+                    <div class="currency-flag">🇦🇺</div>
+                    <div class="currency-name">
+                        <div class="code">AUD — دۆلاری ئوسترالیایی</div>
+                        <div class="full">Australian Dollar</div>
+                    </div>
+                </div>
+                <div class="rate-inputs">
+                    <div class="input-group">
+                        <label>کڕین <span>Buy | شراء</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input buy-input" id="aud_buy" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>فرۆشتن <span>Sell | بيع</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input sell-input" id="aud_sell" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="rate-card">
+                <div class="rate-card-header">
+                    <div class="currency-flag">🇨🇭</div>
+                    <div class="currency-name">
+                        <div class="code">CHF — فرێنکی سوێسری</div>
+                        <div class="full">Swiss Franc</div>
+                    </div>
+                </div>
+                <div class="rate-inputs">
+                    <div class="input-group">
+                        <label>کڕین <span>Buy | شراء</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input buy-input" id="chf_buy" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>فرۆشتن <span>Sell | بيع</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input sell-input" id="chf_sell" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="rate-card">
+                <div class="rate-card-header">
+                    <div class="currency-flag">🇨🇦</div>
+                    <div class="currency-name">
+                        <div class="code">CAD — دۆلاری کەنەدایی</div>
+                        <div class="full">Canadian Dollar</div>
+                    </div>
+                </div>
+                <div class="rate-inputs">
+                    <div class="input-group">
+                        <label>کڕین <span>Buy | شراء</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input buy-input" id="cad_buy" placeholder="0">
+                    </div>
+                    <div class="input-group">
+                        <label>فرۆشتن <span>Sell | بيع</span></label>
+                        <input type="number" inputmode="decimal" class="rate-input sell-input" id="cad_sell" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
         </div>
-    `).join('');
-}
 
-function saveChanges() {
-    currencies.forEach((c, i) => {
-        c.buy = document.getElementById('buy_' + i).value;
-        c.sell = document.getElementById('sell_' + i).value;
-    });
+        <div class="footer-note">
+            نرخەکان <span class="highlight">ڕاستەوخۆ</span> لە سایتەکەت نوێ دەبنەوە<br>
+            بەبێ هیچ Deploy یان Commit دەستی!
+        </div>
+    </div>
 
-    // Generate updated index.html content info
-    let info = 'نرخە نوێیەکان:\n\n';
-    currencies.forEach(c => {
-        info += c.code + ': کڕین=' + c.buy + ' | فرۆشتن=' + c.sell + '\n';
-    });
+    <!-- Sticky Update Button -->
+    <div class="sticky-btn-wrap">
+        <button class="update-btn" id="updateBtn" onclick="updateRates()">
+            <div class="spinner"></div>
+            <span class="btn-icon">🚀</span>
+            <span class="btn-text">نرخەکان نوێ بکەرەوە</span>
+        </button>
+    </div>
 
-    document.getElementById('successMsg').style.display = 'block';
-    document.getElementById('successMsg').innerHTML = '✅ نرخەکان نوێ کران!<br><small>ئێستا فایلی index.html دابگرە و بیبەرە GitHub بۆ نوێکردنەوەی سایت.</small>';
+    <div class="toast" id="toast"></div>
 
-    setTimeout(() => {
-        document.getElementById('successMsg').style.display = 'none';
-    }, 5000);
-}
-</script>
+    <script>
+        const GITHUB_TOKEN = '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';
+        const REPO_OWNER = 'kurd7518-jpg';
+        const REPO_NAME = 'Barze-koya';
+        const FILE_PATH = 'rates.json';
+
+        const CURRENCIES = [
+            'usd','eur','gbp','try','aed','sar','kwd',
+            'irr','jod','nok','sek','dkk','aud','chf','cad'
+        ];
+
+        async function loadCurrentRates() {
+            try {
+                const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+                    headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+                });
+                const data = await res.json();
+                const content = JSON.parse(atob(data.content));
+                Object.keys(content).forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el) el.value = content[key];
+                });
+            } catch (e) {
+                console.log('Could not load current rates');
+            }
+        }
+
+        async function updateRates() {
+            const btn = document.getElementById('updateBtn');
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.querySelector('.btn-text').textContent = 'دەنوێکرێتەوە...';
+
+            try {
+                const rates = {};
+                CURRENCIES.forEach(c => {
+                    rates[`${c}_buy`]  = document.getElementById(`${c}_buy`).value;
+                    rates[`${c}_sell`] = document.getElementById(`${c}_sell`).value;
+                });
+
+                const getRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+                    headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+                });
+                const getData = await getRes.json();
+                const sha = getData.sha;
+
+                const content = btoa(unescape(encodeURIComponent(JSON.stringify(rates, null, 2))));
+                const updateRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'نوێکردنەوەی نرخی دراو',
+                        content: content,
+                        sha: sha
+                    })
+                });
+
+                if (updateRes.ok) {
+                    showToast('✅ نرخەکان بە سەرکەوتوویی نوێ کران!', 'success');
+                } else {
+                    throw new Error('Failed');
+                }
+            } catch (e) {
+                showToast('❌ هەڵەیەک ڕووی دا، دووبارە هەوڵبدەرەوە', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.querySelector('.btn-text').textContent = 'نرخەکان نوێ بکەرەوە';
+            }
+        }
+
+        function showToast(msg, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = `toast ${type}`;
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
+        loadCurrentRates();
+    </script>
 </body>
 </html>
