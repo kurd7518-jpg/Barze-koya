@@ -4,8 +4,8 @@
   "eur_buy": "115.20",
   "eur_sell": "116",
   "gbp_buy": "132",
-  "gbp_sell": "133",
-  "try_buy": "4.650",
+  "gbp_sell": "133.25",
+  "try_buy": "4.700",
   "try_sell": "4.450",
   "aed_buy": "378",
   "aed_sell": "365",
@@ -25,8 +25,8 @@
   "dkk_sell": "145",
   "aud_buy": "68",
   "aud_sell": "72",
-  "chf_buy": "124.75",
-  "chf_sell": "127.25",
+  "chf_buy": "125",
+  "chf_sell": "128",
   "cad_buy": "70",
   "cad_sell": "73"
 }
